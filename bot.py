@@ -18,10 +18,10 @@ from aiogram.types import (
     PreCheckoutQuery
 )
 
-# Replace with your Telegram Bot Token from @BotFather
-BOT_TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
-# Replace with your deployed GitHub Pages URL or ngrok URL
-GAME_WEBAPP_URL = os.getenv("GAME_URL", "https://your-username.github.io/TeleGame/")
+# Telegram Bot Token from @BotFather
+BOT_TOKEN = os.getenv("BOT_TOKEN", "9216785846:AAGiXs1C79DQdXYHBqA81JVChOxZnwMQJRc")
+# GitHub Pages URL for Pixel RPS Duel
+GAME_WEBAPP_URL = os.getenv("GAME_URL", "https://flaze69.github.io/Pixel_RPS/")
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
