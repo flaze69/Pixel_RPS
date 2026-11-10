@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PIXEL RPS DUEL ⚔️ Камінь Ножиці Папір</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- PeerJS for Free Serverless Real-time 2-Player WebRTC Sync -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <div class="crt-overlay" id="crtOverlay"></div>
+
+  <div class="game-container pixel-box" id="gameApp">
+    <!-- Top Utility Bar -->
+    <div class="top-status-bar">
+      <div class="stars-badge" id="starsBadge">
+        <span>⭐</span>
+        <span id="starsBalance">100 STARS</span>
+      </div>
+      <div>
+        <button class="pixel-btn" id="soundBtn" style="padding: 4px 8px; font-size: 8px;">🔊 ON</button>
+        <button class="pixel-btn" id="crtBtn" style="padding: 4px 8px; font-size: 8px;">📺 CRT</button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="game-header">
+      <h1 class="game-title">PIXEL DUEL</h1>
+      <p class="game-subtitle">КАМІНЬ • НОЖИЦІ • ПАПІР 8-BIT</p>
+    </div>
+
+    <!-- SCREEN 1: MAIN MENU -->
+    <div class="screen active" id="screenMenu">
+      <div class="menu-list">
+        <button class="pixel-btn btn-green" id="btnVsBot">
+          <span>🤖</span> ГРАТИ З БОТОМ
+        </button>
+        <button class="pixel-btn btn-yellow" id="btnHotseat">
+          <span>📱</span> 1 ТЕЛЕФОН (2 ГРАВЦІ)
+        </button>
+        <button class="pixel-btn btn-purple" id="btnOnline">
+          <span>🌐</span> ОНЛАЙН PVP (ДУЕЛЬ)
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: ONLINE LOBBY -->
+    <div class="screen" id="screenLobby">
+      <div class="room-box">
+        <p style="color: var(--pixel-accent); margin-bottom: 6px;">КІМНАТА ДЛЯ 2 ГРАВЦІВ</p>
+        <div id="hostSection">
+          <button class="pixel-btn btn-green" id="btnCreateRoom" style="width: 100%; margin-bottom: 8px;">
+            🎮 СТВОРИТИ ДУЕЛЬ
+          </button>
+          <div id="roomCodeDisplay" style="display: none; margin-top: 8px;">
+            <p style="font-size: 8px; color: var(--text-muted);">НАДІШЛИ ЦЕЙ КОД ДРУГУ:</p>
+            <p id="generatedRoomCode" style="font-size: 14px; color: var(--pixel-yellow); padding: 6px;"></p>
+            <button class="pixel-btn btn-yellow" id="btnCopyInvite" style="width: 100%; font-size: 9px;">
+              📋 СКОПІЮВАТИ ПОСИЛАННЯ
+            </button>
+            <p style="font-size: 7px; color: var(--pixel-green); margin-top: 6px;">ОЧІКУВАННЯ ГРАВЦЯ 2...</p>
+          </div>
+        </div>
+
+        <div style="border-top: 2px dashed #30363d; margin: 10px 0;"></div>
+
+        <div id="joinSection">
+          <input type="text" class="room-input" id="inputRoomCode" placeholder="ВВЕДИ КОД" maxlength="8" style="width: 100%; margin-bottom: 8px;">
+          <button class="pixel-btn btn-purple" id="btnJoinRoom" style="width: 100%;">
+            ⚔️ ПРИЄДНАТИСЯ
+          </button>
+        </div>
+      </div>
+      <button class="pixel-btn" id="btnBackFromLobby" style="font-size: 8px;">⬅ НАЗАД В МЕНЮ</button>
+    </div>
+
+    <!-- SCREEN 3: ARENA / BATTLE -->
+    <div class="screen" id="screenBattle">
+      <div class="arena">
+        <!-- Scoreboard -->
+        <div class="scoreboard">
+          <div class="player-info left">
+            <span class="player-name" id="p1Label">ТИ</span>
+            <span class="hearts" id="p1Hearts">❤️❤️❤️</span>
+          </div>
+          <div class="vs-badge" id="roundIndicator">РАУНД 1</div>
+          <div class="player-info right">
+            <span class="player-name" id="p2Label">СУПЕРНИК</span>
+            <span class="hearts" id="p2Hearts">❤️❤️❤️</span>
+          </div>
+        </div>
+
+        <!-- Stage for Clash -->
+        <div class="fighters-stage">
+          <div class="fighter-slot left" id="slotP1">
+            <div id="iconP1"></div>
+          </div>
+          <div id="clashEffect" style="font-size: 20px; display: none;">💥</div>
+          <div class="fighter-slot right" id="slotP2">
+            <div id="iconP2"></div>
+          </div>
+        </div>
+
+        <!-- Dynamic Game Status Text -->
+        <div class="status-message" id="battleStatus">ОБЕРИ СВІЙ ХІД!</div>
+      </div>
+
+      <!-- Controls (Rock / Paper / Scissors buttons) -->
+      <div class="controls-panel" id="controlsPanel">
+        <div class="choices-row">
+          <button class="pixel-btn choice-btn btn-yellow" data-choice="rock">
+            <svg viewBox="0 0 16 16" class="pixel-hand-svg">
+              <!-- Pixel Rock / Fist SVG -->
+              <rect x="5" y="2" width="6" height="2" fill="#fff" />
+              <rect x="3" y="4" width="10" height="2" fill="#fff" />
+              <rect x="2" y="6" width="12" height="6" fill="#f1e05a" />
+              <rect x="3" y="12" width="10" height="2" fill="#fff" />
+              <rect x="4" y="6" width="2" height="4" fill="#30363d" />
+              <rect x="7" y="6" width="2" height="4" fill="#30363d" />
+              <rect x="10" y="6" width="2" height="4" fill="#30363d" />
+            </svg>
+            КАМІНЬ
+          </button>
+
+          <button class="pixel-btn choice-btn btn-purple" data-choice="paper">
+            <svg viewBox="0 0 16 16" class="pixel-hand-svg">
+              <!-- Pixel Paper / Open Hand SVG -->
+              <rect x="3" y="2" width="2" height="6" fill="#bc8cff" />
+              <rect x="6" y="1" width="2" height="7" fill="#bc8cff" />
+              <rect x="9" y="1" width="2" height="7" fill="#bc8cff" />
+              <rect x="12" y="3" width="2" height="5" fill="#bc8cff" />
+              <rect x="1" y="6" width="2" height="4" fill="#bc8cff" />
+              <rect x="3" y="8" width="11" height="5" fill="#fff" />
+              <rect x="4" y="13" width="9" height="2" fill="#30363d" />
+            </svg>
+            ПАПІР
+          </button>
+
+          <button class="pixel-btn choice-btn btn-green" data-choice="scissors">
+            <svg viewBox="0 0 16 16" class="pixel-hand-svg">
+              <!-- Pixel Scissors SVG -->
+              <rect x="3" y="1" width="2" height="6" fill="#3fb950" />
+              <rect x="7" y="1" width="2" height="6" fill="#3fb950" />
+              <rect x="3" y="7" width="6" height="3" fill="#fff" />
+              <rect x="1" y="10" width="4" height="4" fill="#3fb950" />
+              <rect x="7" y="10" width="4" height="4" fill="#3fb950" />
+              <rect x="2" y="11" width="2" height="2" fill="#0d1117" />
+              <rect x="8" y="11" width="2" height="2" fill="#0d1117" />
+            </svg>
+            НОЖИЦІ
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button class="pixel-btn btn-red" id="btnSurrender" style="font-size: 8px;">ЗДАТИСЯ / МЕНЮ</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: GAME OVER / VICTORY -->
+    <div class="screen" id="screenGameOver">
+      <div style="padding: 20px 0;">
+        <div id="endWinnerIcon" style="font-size: 40px; margin-bottom: 12px;">🏆</div>
+        <h2 id="endWinnerTitle" style="color: var(--pixel-yellow); font-size: 16px; margin-bottom: 8px;">ПЕРЕМОГА!</h2>
+        <p id="endWinnerSub" style="font-size: 9px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px;"></p>
+        
+        <div class="room-box" id="starsRewardBox" style="display: none; border-color: var(--pixel-yellow);">
+          <p style="color: var(--pixel-yellow);">+20 STARS ВИГРАШУ! ⭐</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+          <button class="pixel-btn btn-green" id="btnRematch">🔄 РЕВАНШ</button>
+          <button class="pixel-btn" id="btnMenuFromEnd">⬅ ГОЛОВНЕ МЕНЮ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

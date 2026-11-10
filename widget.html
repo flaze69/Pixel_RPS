@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>PIXEL RPS - Inline Widget</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    body { margin:0; padding:10px; background:#0d1117; color:#fff; font-family:'Press Start 2P', monospace; font-size:9px; text-align:center; }
+    .box { border:3px solid #fff; padding:12px; background:#161b22; }
+    .btn { font-family:'Press Start 2P', monospace; font-size:8px; padding:8px 6px; margin:4px; border:2px solid #fff; background:#21262d; color:#fff; cursor:pointer; }
+    .btn:active { transform:translateY(2px); }
+    .status { margin:10px 0; color:#f1e05a; min-height:20px; font-size:8px; }
+    .stage { display:flex; justify-content:space-around; align-items:center; margin:10px 0; font-size:24px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div style="color:#58a6ff; margin-bottom:8px;">⚔️ PIXEL RPS WIDGET</div>
+    <div class="stage">
+      <div id="p1">❓</div>
+      <div style="font-size:12px; color:#f1e05a;">VS</div>
+      <div id="p2">❓</div>
+    </div>
+    <div class="status" id="stat">ОБЕРИ ЗБРОЮ:</div>
+    <div>
+      <button class="btn" onclick="play('rock')">🪨 КАМІНЬ</button>
+      <button class="btn" onclick="play('scissors')">✂️ НОЖИЦІ</button>
+      <button class="btn" onclick="play('paper')">📄 ПАПІР</button>
+    </div>
+  </div>
+  <script>
+    const icons = { rock: '🪨', paper: '📄', scissors: '✂️' };
+    function play(choice) {
+      document.getElementById('p1').innerText = icons[choice];
+      const botChoice = ['rock','paper','scissors'][Math.floor(Math.random()*3)];
+      document.getElementById('p2').innerText = icons[botChoice];
+      let res = '';
+      if (choice === botChoice) res = '⚡ НІЧИЯ!';
+      else if ((choice==='rock'&&botChoice==='scissors')||(choice==='scissors'&&botChoice==='paper')||(choice==='paper'&&botChoice==='rock')) res = '🏆 ТИ ПЕРЕМІГ!';
+      else res = '💀 БОТ ПЕРЕМІГ!';
+      document.getElementById('stat').innerText = res;
+    }
+  </script>
+</body>
+</html>

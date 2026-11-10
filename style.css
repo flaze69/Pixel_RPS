@@ -1,0 +1,368 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --bg-color: #0d1117;
+  --card-bg: #161b22;
+  --pixel-border: #30363d;
+  --pixel-accent: #58a6ff;
+  --pixel-green: #3fb950;
+  --pixel-red: #f85149;
+  --pixel-yellow: #f1e05a;
+  --pixel-purple: #bc8cff;
+  --text-primary: #f0f6fc;
+  --text-muted: #8b949e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* CRT Scanline effect */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Pixel Box Styling */
+.pixel-box {
+  background: var(--card-bg);
+  border: 4px solid #fff;
+  box-shadow: 
+    0 -4px 0 -1px #fff,
+    0 4px 0 -1px #fff,
+    -4px 0 0 -1px #fff,
+    4px 0 0 -1px #fff,
+    0 6px 0 0 rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.pixel-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  padding: 12px 16px;
+  color: #fff;
+  background: #21262d;
+  border: 3px solid #f0f6fc;
+  box-shadow: 0 4px 0 #000;
+  cursor: pointer;
+  transition: transform 0.05s, box-shadow 0.05s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.pixel-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #000;
+}
+
+.pixel-btn.btn-green {
+  background: #238636;
+  border-color: #3fb950;
+}
+
+.pixel-btn.btn-yellow {
+  background: #9e6a03;
+  border-color: #f1e05a;
+  color: #fff;
+}
+
+.pixel-btn.btn-red {
+  background: #da3633;
+  border-color: #f85149;
+}
+
+.pixel-btn.btn-purple {
+  background: #8957e5;
+  border-color: #bc8cff;
+}
+
+/* Main Container */
+.game-container {
+  width: 94%;
+  max-width: 440px;
+  padding: 18px;
+  margin: 15px auto;
+  text-align: center;
+  z-index: 10;
+}
+
+/* Header */
+.game-header {
+  margin-bottom: 20px;
+}
+
+.game-title {
+  font-size: 18px;
+  color: var(--pixel-yellow);
+  text-shadow: 3px 3px 0 #000, -2px -2px 0 #b08800;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  animation: float 2.5s ease-in-out infinite alternate;
+}
+
+.game-subtitle {
+  font-size: 8px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Top bar (Sound, Stars, Room status) */
+.top-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 8px;
+}
+
+.stars-badge {
+  background: #341a00;
+  border: 2px solid var(--pixel-yellow);
+  color: var(--pixel-yellow);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Arena Section */
+.arena {
+  background: #090d13;
+  border: 3px solid #30363d;
+  padding: 18px 10px;
+  margin-bottom: 18px;
+  position: relative;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Score & Lives */
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 9px;
+  margin-bottom: 10px;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-info.left { text-align: left; }
+.player-info.right { text-align: right; }
+
+.player-name {
+  color: var(--pixel-accent);
+}
+
+.player-info.right .player-name {
+  color: var(--pixel-red);
+}
+
+.hearts {
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.vs-badge {
+  font-size: 13px;
+  color: var(--pixel-yellow);
+  animation: pulse 1s infinite;
+}
+
+/* Clash Stage */
+.fighters-stage {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 15px 0;
+  position: relative;
+  min-height: 100px;
+}
+
+.fighter-slot {
+  width: 90px;
+  height: 90px;
+  background: #161b22;
+  border: 3px dashed #30363d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fighter-slot.active {
+  border-style: solid;
+  border-color: var(--pixel-yellow);
+}
+
+.fighter-slot.left.punch {
+  animation: punchRight 0.35s ease-in-out;
+}
+
+.fighter-slot.right.punch {
+  animation: punchLeft 0.35s ease-in-out;
+}
+
+.pixel-hand-svg {
+  width: 64px;
+  height: 64px;
+}
+
+.status-message {
+  font-size: 10px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+/* Choices Controls */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.choices-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 6px;
+  font-size: 8px;
+}
+
+.choice-btn svg {
+  width: 40px;
+  height: 40px;
+}
+
+.choice-btn:hover, .choice-btn:focus {
+  border-color: var(--pixel-yellow);
+}
+
+/* Mode Selection Modal / Screen */
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* Room Bar */
+.room-box {
+  background: #0b0f17;
+  border: 2px solid var(--pixel-accent);
+  padding: 10px;
+  font-size: 9px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.room-input {
+  background: #161b22;
+  border: 2px solid #30363d;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 8px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+@keyframes punchRight {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(35px) scale(1.1); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes punchLeft {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-35px) scale(1.1); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes shakeScreen {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-4px, 3px); }
+  40% { transform: translate(4px, -3px); }
+  60% { transform: translate(-3px, -2px); }
+  80% { transform: translate(3px, 2px); }
+}
+
+.shaking {
+  animation: shakeScreen 0.4s ease-in-out;
+}
